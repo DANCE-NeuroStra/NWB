@@ -25,7 +25,9 @@ https://github.com/DANCE-NeuroStra/NWB.git
 
 or click on Open with Github desktop
 
-![image-20250306142002532](/media to update)
+![alt text](media/GitHub_clone_selection.png)
+![alt text](GitHub_clone_selection-B.png)
+![alt text](GitHub_clone_selection-Zoom.png)
 
 In GitHub Desktop, chose where your code will be located
 
