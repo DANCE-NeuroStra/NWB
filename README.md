@@ -172,6 +172,5 @@ Start the Converter by
 (NWB) C:\Users\vanto>python "path\to\the\github\repo\NWB\GUI\Fiberphotometry\GUI_converter.py"
 ```
 
-if you see the following GUI, you can proceed to the import. For this, refer to the [dedicated import tutorial](./fiberphotometry_tools/GUI Interface/Converter_to_NWB/README.md)
-
+if you see the following GUI, you can proceed to the import. For this, refer to the [dedicated import tutorial](GUI/Fiberphotometry/README.md)
 ![image-20250306152919879](media/README/image-20250306152919879.png)
