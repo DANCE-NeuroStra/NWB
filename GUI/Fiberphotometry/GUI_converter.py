@@ -15,7 +15,8 @@ import platform
 
 #  Get the file directory to find all the parent submmodule whereever the user put this script
 script_directory = pathlib.Path(__file__).parent.resolve()
-file_path = str(script_directory).parts[:-3]
+# Keep script_directory as a Path object
+file_path = script_directory.parts[:-3]
 module_folder = str(pathlib.Path(*file_path))
 sys.path.append(module_folder)
 
