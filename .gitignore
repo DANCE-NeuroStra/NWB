@@ -65,3 +65,6 @@ docker-compose.override.yml
 .env
 *.secret
 config.json
+GUI/Fiberphotometry/NWB_Converter.spec
+GUI/Fiberphotometry/NWB_Converter_window.spec
+GUI/Fiberphotometry/NWB_Converter_mac.spec
