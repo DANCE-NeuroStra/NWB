@@ -6,6 +6,8 @@
 
 > **Note for Python Users : Even if using python for analysis, you can use directly the binaries (GUIConverter.exe for windows user and GUIConverter.app for mac) to create NWB files**
 
+> [**Link for binaries**](https://seafile.unistra.fr/d/fcb93c937e7b4ba58621/)
+
 To use our conversion tools, you need to have Python3 installed. 
 
 To facilitate your installation, we recommend using Anaconda. Once anaconda is installed, create a new environment, either by using Anaconda Navigator, or in your command prompt (see below).
