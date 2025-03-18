@@ -11,7 +11,26 @@ from pynwb import NWBHDF5IO, NWBFile, TimeSeries
 from pynwb.file import Subject
 from pynwb.image import ImageSeries
 from pynwb.ophys import OpticalChannel
+from pathlib import Path
+import platform
+import sys
 
+def validate_platform_compatibility():
+    """Validate platform-specific requirements"""
+    system = platform.system()
+    if system not in ['Windows', 'Darwin', 'Linux']:
+        raise OSError(f"Unsupported operating system: {system}")
+    
+    if system == 'Windows':
+        # Check for long path support on Windows
+        import winreg
+        try:
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\CurrentControlSet\Control\FileSystem") as key:
+                value, _ = winreg.QueryValueEx(key, "LongPathsEnabled")
+                if not value:
+                    print("Warning: Windows long path support is not enabled")
+        except WindowsError:
+            print("Warning: Could not check Windows long path support")
 
 def add_channel(info, data, device, nwbfile):
     """
@@ -205,6 +224,15 @@ def create_NWB(general_info, animal_info, channel_info, data, TTL_info = {}):
     pynwb.NWBFile
         The NWB file object with the added data.
     """
+    # Validate platform compatibility
+    validate_platform_compatibility()
+    
+    # Convert any file paths in general_info to Path objects
+    if 'source_script' in general_info:
+        general_info['source_script'] = str(Path(general_info['source_script']))
+    if 'source_script_file_name' in general_info:
+        general_info['source_script_file_name'] = str(Path(general_info['source_script_file_name']))
+
     # Create the NWB file with general information
     nwbfile = NWBFile(**general_info)
     # Add subject information to the NWB file

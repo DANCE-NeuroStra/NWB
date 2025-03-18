@@ -11,12 +11,12 @@ import pathlib
 import traceback
 import logging
 from datetime import datetime
+import platform
 
 #  Get the file directory to find all the parent submmodule whereever the user put this script
 script_directory = pathlib.Path(__file__).parent.resolve()
-file_path = str(script_directory).split("\\")[:-3]
-file_path[0] = file_path[0]+r"\\"
-module_folder = os.path.join(*file_path)
+file_path = str(script_directory).parts[:-3]
+module_folder = str(pathlib.Path(*file_path))
 sys.path.append(module_folder)
 
 
@@ -47,10 +47,11 @@ while True:
                 continue
                 
             # Setup logging
-            path_list = values[0].split("/")[:-1]
-            path_list[0] = path_list[0]+r"\\"
-            direc_path = os.path.join(*path_list)
-            log_path = os.path.join(direc_path, "Files", "log.txt")
+            input_path = pathlib.Path(values[0])
+            direc_path = str(input_path.parent)
+            log_path = os.path.join(direc_path, "log.txt")
+            if not os.path.exists(log_path):
+                open(log_path, 'w').close()
             logging.basicConfig(
                 level=logging.INFO,
                 format='%(asctime)s - %(levelname)s - %(message)s',

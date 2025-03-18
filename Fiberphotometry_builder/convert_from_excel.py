@@ -15,6 +15,7 @@ import os
 from uuid import uuid4
 from alive_progress import alive_bar
 import logging
+from pathlib import Path  # More modern path handling
 
 def convert_gen_info(info):
     
@@ -117,8 +118,9 @@ def convert_TTL (info):
     return TTL_dict
 
 def get_opener(filepath):
-    extension = filepath.split(".")[-1:][0]
-    print("Extension detected: "+ str(extension))
+    # Use Path for better cross-platform compatibility
+    extension = Path(filepath).suffix.lower()[1:]  # removes the dot and converts to lowercase
+    print(f"Extension detected: {extension}")
     if extension == "csv":
         print("CSV file opener")
         return DoricCSV()
@@ -153,6 +155,12 @@ def convert_excel_to_nwb(file, save_direc, warning =  False, logger = None):
     logging.basicConfig(level= logging.INFO)
     log = logging.getLogger('alive_progress')
     
+    # Convert input paths to Path objects
+    file = Path(file)
+    save_direc = Path(save_direc)
+    
+    # Ensure save directory exists
+    save_direc.mkdir(parents=True, exist_ok=True)
     
     if warning == False:
         warnings.filterwarnings("ignore")
@@ -222,8 +230,9 @@ def convert_excel_to_nwb(file, save_direc, warning =  False, logger = None):
                 if pd.notna(row['Comments']) and row['Comments'] != '' and row['Comments'] is not None:
                     save_path_parts.append(str(row['Comments']).replace(" ", "_"))
                 
-                save_path = os.path.join(save_direc, "_".join(save_path_parts))
-                print("File saving to: {0}".format(save_path))
+                # Use Path for building save paths
+                save_path = save_direc.joinpath("_".join(save_path_parts))
+                print(f"File saving to: {save_path}")
                 save_NWB(File, save_path)   
                 logger.info(f"File saved at: {save_path}")
             except KeyError as e:

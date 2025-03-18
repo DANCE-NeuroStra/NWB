@@ -4,12 +4,15 @@ Created on Mon Apr 29 14:44:17 2024
 
 @author: PierreA.DERRIEN
 """
+from pathlib import Path
 import pynwb
 from pynwb import NWBHDF5IO
 import pandas as pd
 import numpy as np
 import time
 from General_tools.printers import recursive_printer
+import sys
+import platform
 
 class NWB_to_Dataframe_converter():
     
@@ -17,15 +20,27 @@ class NWB_to_Dataframe_converter():
         """
         Initialize the converter with the path to the NWB file.
         """
-        self.file_path = path
+        try:
+            self.file_path = Path(path).resolve(strict=True)
+        except (FileNotFoundError, RuntimeError) as e:
+            raise FileNotFoundError(f"File not found or inaccessible: {path}")
         self.loaded = False
+        
+        # Platform-specific checks
+        if platform.system() == 'Darwin':  # macOS
+            if not self.file_path.is_file():
+                raise FileNotFoundError(f"File not accessible on macOS: {self.file_path}")
+        elif platform.system() == 'Windows':  # Windows
+            if len(str(self.file_path)) > 260:  # Windows PATH length limitation
+                raise OSError("File path exceeds Windows maximum path length")
         
     def load_NWB(self):
         """
         Load the NWB file and extract acquisition data, timestamps, and events.
         """
         start_time = time.time()
-        with NWBHDF5IO(self.file_path, mode="r") as io2:
+        # Convert to string representation for NWBHDF5IO
+        with NWBHDF5IO(str(self.file_path), mode="r") as io2:
             self.file_data = io2.read()
             self.acqui_data = {}
             self.timestmps_data = {}
@@ -174,8 +189,9 @@ class NWB_to_Dataframe_converter():
         recursive_printer(self.metaData)
         
 if __name__ == "__main__":
-    path = "Path\to\File"
-    converter = NWB_to_Dataframe_converter(path = path)
+    # Example of cross-platform path handling
+    path = Path("Path/to/File")  # Forward slashes work on both platforms
+    converter = NWB_to_Dataframe_converter(path=path)
     converter.convert()
     data = converter.get_data()
     converter.print_metaData()
